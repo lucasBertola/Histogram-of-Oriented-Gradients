@@ -2,7 +2,7 @@
   "name": "histogram-of-oriented-gradients",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,5 +15,14 @@
   "bugs": {
     "url": "https://github.com/lucasBertola/histogram-of-Oriented-Gradients/issues"
   },
-  "homepage": "https://github.com/lucasBertola/histogram-of-Oriented-Gradients#readme"
+  "homepage": "https://github.com/lucasBertola/histogram-of-Oriented-Gradients#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-beautify": "^2.0.0",
+    "gulp-browserify": "^0.5.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-uglify": "^1.5.3",
+    "run-sequence": "^1.1.5"
+  }
 }
