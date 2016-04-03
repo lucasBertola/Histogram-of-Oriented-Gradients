@@ -1,8 +1,11 @@
+var jpeg = require('jpeg-js');
+var fs = require('fs');
+
+
 function Hog() {
     this.image = [];
     this.getJPGImage = function(path) {
-        var jpeg = require('jpeg-js');
-        var fs = require('fs');
+        //todo remove sync
         var jpegData = fs.readFileSync(path);
         var imageTmp = jpeg.decode(jpegData);
         var width = imageTmp.width;
@@ -21,8 +24,35 @@ function Hog() {
                     //TODO a:imageTmp.data[dataIndex + 3]
             })
         }
+        return this.image;
+    }
+
+
+    this.exportJpg = function(path) {
+
+        var height = this.image.length,
+            width = this.image[0].length;
+
+        var frameData = new Buffer(width * height * 4);
+        var data = 0;
+        while (data < frameData.length) {
+            var j = data;
+            frameData[data++] = this.image[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].r; // red
+            frameData[data++] = this.image[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].g; // green
+            frameData[data++] = this.image[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].b; // blue
+            frameData[data++] = 0xFF; // alpha - ignored in JPEGs
+        }
+        var rawImageData = {
+            data: frameData,
+            width: width,
+            height: height
+        };
+        var jpegImageData = jpeg.encode(rawImageData, 100);
+        fs.writeFileSync(path, jpegImageData.data);
 
     }
+
+
 
 }
 
