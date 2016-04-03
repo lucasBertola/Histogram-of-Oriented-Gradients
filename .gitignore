@@ -26,6 +26,10 @@ build/Release
 # Dependency directory
 node_modules
 
+# Dependency directory
+exemple\imgResult
+
+
 # Optional npm cache directory
 .npm
 

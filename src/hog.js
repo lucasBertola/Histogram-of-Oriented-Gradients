@@ -4,6 +4,8 @@ var fs = require('fs');
 
 function Hog() {
     this.image = [];
+    this.Outputimage = [];
+
     this.getJPGImage = function(path) {
         //todo remove sync
         var jpegData = fs.readFileSync(path);
@@ -30,16 +32,16 @@ function Hog() {
 
     this.exportJpg = function(path) {
 
-        var height = this.image.length,
-            width = this.image[0].length;
+        var height = this.Outputimage.length,
+            width = this.Outputimage[0].length;
 
         var frameData = new Buffer(width * height * 4);
         var data = 0;
         while (data < frameData.length) {
             var j = data;
-            frameData[data++] = this.image[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].r; // red
-            frameData[data++] = this.image[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].g; // green
-            frameData[data++] = this.image[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].b; // blue
+            frameData[data++] = this.Outputimage[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].r; // red
+            frameData[data++] = this.Outputimage[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].g; // green
+            frameData[data++] = this.Outputimage[Math.floor(j / (width * 4))][(j % (width * 4)) / 4].b; // blue
             frameData[data++] = 0xFF; // alpha - ignored in JPEGs
         }
         var rawImageData = {
@@ -51,6 +53,89 @@ function Hog() {
         fs.writeFileSync(path, jpegImageData.data);
 
     }
+
+    this.gardientHorizontal = function() {
+        var height = this.image.length,
+            width = this.image[0].length;
+
+        for (var heightIndex = 0; heightIndex < height; heightIndex++) {
+            this.Outputimage.push([]);
+            for (var widthIndex = 0; widthIndex < width; widthIndex++) {
+                var pixel = this.image[heightIndex][widthIndex];
+                var prevPixel = (widthIndex == 0) ? pixel : this.image[heightIndex][widthIndex - 1];
+                var nextPixel = (widthIndex == width - 1) ? pixel : this.image[heightIndex][widthIndex + 1];
+
+                var maxGradient = Math.max(Math.abs(-prevPixel.r + nextPixel.r), Math.abs(-prevPixel.g + nextPixel.g), Math.abs(-prevPixel.b + nextPixel.b));
+                if (maxGradient > 255) maxGradient = 255;
+                if (maxGradient < 0) maxGradient = 0;
+
+                this.Outputimage[heightIndex].push({
+                    r: maxGradient,
+                    g: maxGradient,
+                    b: maxGradient,
+                })
+            }
+        }
+    }
+
+
+    this.gardientVertical = function() {
+        var height = this.image.length,
+            width = this.image[0].length;
+
+        for (var heightIndex = 0; heightIndex < height; heightIndex++) {
+            this.Outputimage.push([]);
+            for (var widthIndex = 0; widthIndex < width; widthIndex++) {
+                var pixel = this.image[heightIndex][widthIndex];
+                var prevPixel = (heightIndex == 0) ? pixel : this.image[heightIndex - 0][widthIndex];
+                var nextPixel = (heightIndex == height - 1) ? pixel : this.image[heightIndex + 1][widthIndex];
+
+                var maxGradient = Math.max(Math.abs(-prevPixel.r + nextPixel.r), Math.abs(-prevPixel.g + nextPixel.g), Math.abs(-prevPixel.b + nextPixel.b));
+                if (maxGradient > 255) maxGradient = 255;
+                if (maxGradient < 0) maxGradient = 0;
+
+                this.Outputimage[heightIndex].push({
+                    r: maxGradient,
+                    g: maxGradient,
+                    b: maxGradient,
+                })
+            }
+        }
+    }
+
+    this.gardient = function() {
+        var height = this.image.length,
+            width = this.image[0].length;
+
+        for (var heightIndex = 0; heightIndex < height; heightIndex++) {
+            this.Outputimage.push([]);
+            for (var widthIndex = 0; widthIndex < width; widthIndex++) {
+                var pixel = this.image[heightIndex][widthIndex];
+                var topPixel = (heightIndex == 0) ? pixel : this.image[heightIndex - 0][widthIndex];
+                var bottomPixel = (heightIndex == height - 1) ? pixel : this.image[heightIndex + 1][widthIndex];
+
+                var leftPixel = (widthIndex == 0) ? pixel : this.image[heightIndex][widthIndex - 1];
+                var rightPixel = (widthIndex == width - 1) ? pixel : this.image[heightIndex][widthIndex + 1];
+
+                var maxGradientVertical = Math.max(Math.abs(-topPixel.r + bottomPixel.r), Math.abs(-topPixel.g + bottomPixel.g), Math.abs(-topPixel.b + bottomPixel.b));
+                if (maxGradient > 255) maxGradient = 255;
+                if (maxGradient < 0) maxGradient = 0;
+
+                var maxGradientHorizontal = Math.max(Math.abs(-leftPixel.r + rightPixel.r), Math.abs(-leftPixel.g + rightPixel.g), Math.abs(-leftPixel.b + rightPixel.b));
+                if (maxGradient > 255) maxGradient = 255;
+                if (maxGradient < 0) maxGradient = 0;
+
+                var maxGradient = Math.max(maxGradientVertical, maxGradientHorizontal)
+
+                this.Outputimage[heightIndex].push({
+                    r: maxGradient,
+                    g: maxGradient,
+                    b: maxGradient,
+                })
+            }
+        }
+    }
+
 
 
 
