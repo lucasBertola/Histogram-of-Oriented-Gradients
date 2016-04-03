@@ -16,16 +16,16 @@ hog.getJPGImage(__dirname + "/imgTest/lapin1.jpg");
 hog.gardient();
 hog.exportJpg("/lapin1-1.jpg");
 
-var hog = new hogClass();
-hog.getJPGImage(__dirname + "/imgTest/ballon1.jpg");
-hog.gardient();
-hog.exportJpg("/ballon1-1.jpg");
-
-
-
 
 var hog = new hogClass();
 hog.getJPGImage(__dirname + "/imgTest/chien1.jpg");
 hog.gardient();
 hog.exportJpg("/chien1-1.jpg");
+//new hog();
+
+
+var hog = new hogClass();
+hog.getJPGImage(__dirname + "/imgTest/passant1.jpg");
+hog.gardient();
+hog.exportJpg("/passant1.jpg");
 //new hog();
