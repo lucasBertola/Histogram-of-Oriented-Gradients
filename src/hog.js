@@ -126,6 +126,7 @@ function Hog() {
                 if (maxGradient < 0) maxGradient = 0;
 
                 var maxGradient = Math.max(maxGradientVertical, maxGradientHorizontal)
+                    //var maxGradient = Math.sqrt(Math.pow(maxGradientVertical, 2) + Math.pow(maxGradientHorizontal, 2))
 
                 this.Outputimage[heightIndex].push({
                     r: maxGradient,
