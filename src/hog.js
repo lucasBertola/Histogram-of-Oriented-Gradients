@@ -53,8 +53,62 @@ function Hog() {
         fs.writeFileSync(path, jpegImageData.data);
 
     }
+    this.gradientVector = function() {
+        var height = this.image.length,
+            width = this.image[0].length;
+
+        var vectorArray = new Array(height);
+        for (var heightIndex = 0; heightIndex < height; heightIndex++) {
+            vectorArray[heightIndex] = new Array(width);
+            for (var widthIndex = 0; widthIndex < width; widthIndex++) {
+                var pixel = this.image[heightIndex][widthIndex];
+
+                var topPixel = (heightIndex == 0) ? pixel : this.image[heightIndex - 0][widthIndex];
+                var bottomPixel = (heightIndex == height - 1) ? pixel : this.image[heightIndex + 1][widthIndex];
+
+                var leftPixel = (widthIndex == 0) ? pixel : this.image[heightIndex][widthIndex - 1];
+                var rightPixel = (widthIndex == width - 1) ? pixel : this.image[heightIndex][widthIndex + 1];
 
 
+                var vectorVerticalRGB = 0;
+
+                switch (Math.max(Math.abs(-topPixel.r + bottomPixel.r), Math.abs(-topPixel.g + bottomPixel.g), Math.abs(-topPixel.b + bottomPixel.b))) {
+                    case Math.abs(-topPixel.r + bottomPixel.r):
+                        vectorVerticalRGB = -topPixel.r + bottomPixel.r;
+                        break;
+                    case Math.abs(-topPixel.g + bottomPixel.g):
+                        vectorVerticalRGB = -topPixel.g + bottomPixel.g;
+                        break;
+                    case Math.abs(-topPixel.b + bottomPixel.b):
+                        vectorVerticalRGB = -topPixel.b + bottomPixel.b;
+                        break;
+
+                }
+
+                var vectorHorizontalRGB = 0;
+
+                switch (Math.max(Math.abs(-leftPixel.r + rightPixel.r), Math.abs(-leftPixel.g + rightPixel.g), Math.abs(-leftPixel.b + rightPixel.b))) {
+                    case Math.abs(-leftPixel.r + rightPixel.r):
+                        vectorHorizontalRGB = -leftPixel.r + rightPixel.r;
+                        break;
+                    case Math.abs(-leftPixel.g + rightPixel.g):
+                        vectorHorizontalRGB = -leftPixel.g + rightPixel.g;
+                        break;
+                    case Math.abs(-leftPixel.b + rightPixel.b):
+                        vectorHorizontalRGB = -leftPixel.b + rightPixel.b;
+                        break;
+
+                }
+                //var gradientVerticalNorme = 
+                vectorArray[heightIndex][widthIndex] = {
+                    norme: Math.sqrt(Math.pow(vectorHorizontalRGB, 2) + Math.pow(vectorVerticalRGB, 2)),
+                    angle: Math.atan2(vectorVerticalRGB, vectorHorizontalRGB)
+                }
+            }
+        }
+
+        return vectorArray;
+    }
 
     this.gardient = function() {
         var height = this.image.length,
