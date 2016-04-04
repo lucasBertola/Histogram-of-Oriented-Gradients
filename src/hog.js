@@ -54,54 +54,7 @@ function Hog() {
 
     }
 
-    this.gardientHorizontal = function() {
-        var height = this.image.length,
-            width = this.image[0].length;
 
-        for (var heightIndex = 0; heightIndex < height; heightIndex++) {
-            this.Outputimage.push([]);
-            for (var widthIndex = 0; widthIndex < width; widthIndex++) {
-                var pixel = this.image[heightIndex][widthIndex];
-                var prevPixel = (widthIndex == 0) ? pixel : this.image[heightIndex][widthIndex - 1];
-                var nextPixel = (widthIndex == width - 1) ? pixel : this.image[heightIndex][widthIndex + 1];
-
-                var maxGradient = Math.max(Math.abs(-prevPixel.r + nextPixel.r), Math.abs(-prevPixel.g + nextPixel.g), Math.abs(-prevPixel.b + nextPixel.b));
-                if (maxGradient > 255) maxGradient = 255;
-                if (maxGradient < 0) maxGradient = 0;
-
-                this.Outputimage[heightIndex].push({
-                    r: maxGradient,
-                    g: maxGradient,
-                    b: maxGradient,
-                })
-            }
-        }
-    }
-
-
-    this.gardientVertical = function() {
-        var height = this.image.length,
-            width = this.image[0].length;
-
-        for (var heightIndex = 0; heightIndex < height; heightIndex++) {
-            this.Outputimage.push([]);
-            for (var widthIndex = 0; widthIndex < width; widthIndex++) {
-                var pixel = this.image[heightIndex][widthIndex];
-                var prevPixel = (heightIndex == 0) ? pixel : this.image[heightIndex - 0][widthIndex];
-                var nextPixel = (heightIndex == height - 1) ? pixel : this.image[heightIndex + 1][widthIndex];
-
-                var maxGradient = Math.max(Math.abs(-prevPixel.r + nextPixel.r), Math.abs(-prevPixel.g + nextPixel.g), Math.abs(-prevPixel.b + nextPixel.b));
-                if (maxGradient > 255) maxGradient = 255;
-                if (maxGradient < 0) maxGradient = 0;
-
-                this.Outputimage[heightIndex].push({
-                    r: maxGradient,
-                    g: maxGradient,
-                    b: maxGradient,
-                })
-            }
-        }
-    }
 
     this.gardient = function() {
         var height = this.image.length,
