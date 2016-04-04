@@ -53,6 +53,53 @@ function Hog() {
         fs.writeFileSync(path, jpegImageData.data);
 
     }
+    this.extractHOG = function() {
+        var histograms = this.extractHistograms();
+    }
+    this.extractHistograms = function() {
+        var vectors = this.gradientVector();
+        var cellSize = 8;
+        var bins = 4;
+        var cellsWide = Math.floor(vectors[0].length / cellSize);
+        var cellsHigh = Math.floor(vectors.length / cellSize);
+        console.log("largeur : " + cellsWide);
+        console.log("hauteur : " + cellsHigh);
+
+        var histograms = new Array(cellsHigh);
+
+        for (var i = 0; i < cellsHigh; i++) {
+            histograms[i] = new Array(cellsWide);
+
+            for (var j = 0; j < cellsWide; j++) {
+                histograms[i][j] = this.getHistogram(vectors, j * cellSize, i * cellSize,
+                    cellSize, bins);
+            }
+        }
+        return histograms;
+    }
+
+    this.getHistogram = function(elements, x, y, size, bins) {
+        var histogram = Array.apply(null, Array(bins)).map(Number.prototype.valueOf, 0);
+
+        for (var i = 0; i < size; i++) {
+            for (var j = 0; j < size; j++) {
+                var vector = elements[y + i][x + j];
+                var bin = this.binFor(vector.angle, bins);
+                histogram[bin] += vector.norme;
+            }
+        }
+        return histogram;
+    }
+
+    this.binFor = function(radians, bins) {
+        var angle = radians * (180 / Math.PI);
+        angle += 180;
+        angle %= 360;
+        var bin = Math.floor(angle / 360 * bins);
+        return bin;
+    }
+
+
     this.gradientVector = function() {
         var height = this.image.length,
             width = this.image[0].length;
