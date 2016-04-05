@@ -55,15 +55,59 @@ function Hog() {
     }
     this.extractHOG = function() {
         var histograms = this.extractHistograms();
+        var a = this.extractHOGFromHistograms(histograms);
+        return a;
+    }
+
+
+    this.extractHOGFromHistograms = function(histograms) {
+        var blockSize = 2;
+        var blockStride = 1;
+
+        var normalize = this.L2;
+
+        var blocks = [];
+        var blocksHighMax = histograms.length - blockSize + 1;
+        var blocksWideMax = histograms[0].length - blockSize + 1;
+
+
+        for (var y = 0; y < blocksHighMax; y += blockStride) {
+            for (var x = 0; x < blocksWideMax; x += blockStride) {
+                var block = this.getBlock(histograms, x, y, blockSize);
+                normalize(block);
+                blocks.push(block);
+            }
+        }
+        return Array.prototype.concat.apply([], blocks);
+    }
+
+    this.getBlock = function(histograms, x, y, blockSIze) {
+        var square = [];
+        for (var i = y; i < y + blockSIze; i++) {
+            for (var j = x; j < x + blockSIze; j++) {
+                square.push(histograms[i][j]);
+            }
+        }
+        return Array.prototype.concat.apply([], square);
+    }
+
+    this.L2 = function(vector) {
+        var epsilon = 0.00001;
+        var sum = 0;
+        for (var i = 0; i < vector.length; i++) {
+            sum += Math.pow(vector[i], 2);
+        }
+        var denom = Math.sqrt(sum + epsilon);
+        for (var i = 0; i < vector.length; i++) {
+            vector[i] /= denom;
+        }
     }
     this.extractHistograms = function() {
         var vectors = this.gradientVector();
         var cellSize = 8;
-        var bins = 4;
+        var bins = 9;
         var cellsWide = Math.floor(vectors[0].length / cellSize);
         var cellsHigh = Math.floor(vectors.length / cellSize);
-        console.log("largeur : " + cellsWide);
-        console.log("hauteur : " + cellsHigh);
 
         var histograms = new Array(cellsHigh);
 
